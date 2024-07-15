@@ -1,4 +1,8 @@
 export default function DeleteConfirmation({ onConfirm, onCancel }) {
+  console.log('timmer started'); 
+  setTimeout(() => {   // the problem :  the timmer started when the app component rendered we can also controll that conditionaly but when we click the no button in this component the place is deleted
+    onConfirm()
+  },3*1000)
   return (
     <div id="delete-confirmation">
       <h2>Are you sure?</h2>

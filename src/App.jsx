@@ -87,7 +87,7 @@ function App() {
   }
   return (
     <>
-      <Modal open={isModalOpen} onClose={handleModelClose}>
+      <Modal open={isModalOpen} onClose={handleModelClose}>  {/* modal is a part of the dom bu the visiblity is controlled by the showModal/close */}
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}
           onConfirm={handleRemovePlace}
