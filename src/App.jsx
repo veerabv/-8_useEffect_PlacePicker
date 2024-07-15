@@ -74,7 +74,7 @@ function App() {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     // modal.current.close();
-    setIsModalOpen(false);
+    setIsModalOpen(false);  // if i comment this line then we get the infnite loop when we open the model  , we can see it by comment this line . to avoid this also we use useContext hook
     const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || []; //// updating the storage when delete place
     localStorage.setItem(
       "selectedPlaces",
