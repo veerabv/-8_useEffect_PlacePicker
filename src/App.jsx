@@ -14,8 +14,10 @@ function App() {
   const [availablePlaces, setAvailablePlaces] = useState([]);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {  //navigator is the global object provided by the JS to get the current location of the user
-      const sortedPlaces = sortPlacesByDistance(              // with the calbaack function which gives the postition object where lat lang of the user 
+    navigator.geolocation.getCurrentPosition((position) => {
+      //navigator is the global object provided by the JS to get the current location of the user
+      const sortedPlaces = sortPlacesByDistance(
+        // with the calbaack function which gives the postition object where lat lang of the user
         AVAILABLE_PLACES,
         position.coords.latitude,
         position.coords.longitude
@@ -41,6 +43,15 @@ function App() {
       const place = AVAILABLE_PLACES.find((place) => place.id === id);
       return [place, ...prevPickedPlaces];
     });
+
+    const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces") || []);
+
+    if (storedIDs.indexOf(id) === -1) {
+      localStorage.setItem(
+        "selectedPlaces",
+        JSON.stringify([id, ...storedIDs])
+      );
+    }
   }
 
   function handleRemovePlace() {
@@ -76,7 +87,9 @@ function App() {
         />
         <Places
           title="Available Places"
-          fallbackText={"Sorting the Available Places ... Kindly allow the loction popUp"}
+          fallbackText={
+            "Sorting the Available Places ... Kindly allow the loction popUp"
+          }
           places={availablePlaces}
           onSelectPlace={handleSelectPlace}
         />
