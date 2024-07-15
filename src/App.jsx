@@ -14,6 +14,12 @@ function App() {
   const [availablePlaces, setAvailablePlaces] = useState([]);
 
   useEffect(() => {
+      const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces") )|| [];
+     const storedPlaces =  storedIDs.map((id) => AVAILABLE_PLACES.find(place => place.id === id))
+     setPickedPlaces(storedPlaces);
+  } , [])
+
+  useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
       //navigator is the global object provided by the JS to get the current location of the user
       const sortedPlaces = sortPlacesByDistance(
@@ -44,7 +50,7 @@ function App() {
       return [place, ...prevPickedPlaces];
     });
 
-    const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces") || []);
+    const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || [];  // updating the storage when added place
 
     if (storedIDs.indexOf(id) === -1) {
       localStorage.setItem(
@@ -59,6 +65,8 @@ function App() {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     modal.current.close();
+    const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces") ) || [];  //// updating the storage when delete place
+    localStorage.setItem('selectedPlaces' , JSON.stringify(storedIDs.filter((id) => id !== selectedPlace.current)))  
   }
 
   return (
