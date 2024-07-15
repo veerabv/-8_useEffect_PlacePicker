@@ -7,17 +7,23 @@ import DeleteConfirmation from "./components/DeleteConfirmation.jsx";
 import logoImg from "./assets/logo.png";
 import { sortPlacesByDistance } from "./loc.js";
 
+//we move this line out of the component because it is used only when the app restarts  
+const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
+const storedPlaces = storedIDs.map((id) =>
+  AVAILABLE_PLACES.find((place) => place.id === id)
+);
+
 function App() {
   const modal = useRef();
   const selectedPlace = useRef();
-  const [pickedPlaces, setPickedPlaces] = useState([]);
+  const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
   const [availablePlaces, setAvailablePlaces] = useState([]);
-
-  useEffect(() => {
-      const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces") )|| [];
-     const storedPlaces =  storedIDs.map((id) => AVAILABLE_PLACES.find(place => place.id === id))
-     setPickedPlaces(storedPlaces);
-  } , [])
+  // this is used to get the current localstorageData , but this is need inside the useEffect or not ?
+  // useEffect(() => {
+  //     const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces") )|| [];
+  //    const storedPlaces =  storedIDs.map((id) => AVAILABLE_PLACES.find(place => place.id === id))
+  //    setPickedPlaces(storedPlaces);
+  // } , [])
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -50,7 +56,7 @@ function App() {
       return [place, ...prevPickedPlaces];
     });
 
-    const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || [];  // updating the storage when added place
+    const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || []; // updating the storage when added place
 
     if (storedIDs.indexOf(id) === -1) {
       localStorage.setItem(
@@ -65,8 +71,11 @@ function App() {
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     modal.current.close();
-    const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces") ) || [];  //// updating the storage when delete place
-    localStorage.setItem('selectedPlaces' , JSON.stringify(storedIDs.filter((id) => id !== selectedPlace.current)))  
+    const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || []; //// updating the storage when delete place
+    localStorage.setItem(
+      "selectedPlaces",
+      JSON.stringify(storedIDs.filter((id) => id !== selectedPlace.current))
+    );
   }
 
   return (
