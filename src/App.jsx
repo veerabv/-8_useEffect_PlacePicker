@@ -7,17 +7,18 @@ import DeleteConfirmation from "./components/DeleteConfirmation.jsx";
 import logoImg from "./assets/logo.png";
 import { sortPlacesByDistance } from "./loc.js";
 
-//we move this line out of the component because it is used only when the app restarts  
+//we move this line out of the component because it is used only when the app restarts
 const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || [];
 const storedPlaces = storedIDs.map((id) =>
   AVAILABLE_PLACES.find((place) => place.id === id)
 );
 
 function App() {
-  const modal = useRef();
+  // const modal = useRef();
   const selectedPlace = useRef();
   const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
   const [availablePlaces, setAvailablePlaces] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // this is used to get the current localstorageData , but this is need inside the useEffect or not ?
   // useEffect(() => {
   //     const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces") )|| [];
@@ -39,12 +40,14 @@ function App() {
   }, []);
 
   function handleStartRemovePlace(id) {
-    modal.current.open();
+    // modal.current.open();
+    setIsModalOpen(true);
     selectedPlace.current = id;
   }
 
   function handleStopRemovePlace() {
-    modal.current.close();
+    // modal.current.close();\
+    setIsModalOpen(false);
   }
 
   function handleSelectPlace(id) {
@@ -70,7 +73,8 @@ function App() {
     setPickedPlaces((prevPickedPlaces) =>
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
-    modal.current.close();
+    // modal.current.close();
+    setIsModalOpen(false);
     const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || []; //// updating the storage when delete place
     localStorage.setItem(
       "selectedPlaces",
@@ -78,9 +82,12 @@ function App() {
     );
   }
 
+  function handleModelClose() {
+    setIsModalOpen(false);
+  }
   return (
     <>
-      <Modal ref={modal}>
+      <Modal open={isModalOpen} onClose={handleModelClose}>
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}
           onConfirm={handleRemovePlace}
