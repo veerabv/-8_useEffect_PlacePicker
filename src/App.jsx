@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState ,useCallback} from "react";
 
 import Places from "./components/Places.jsx";
 import { AVAILABLE_PLACES } from "./data.js";
@@ -68,19 +68,30 @@ function App() {
       );
     }
   }
-
-  function handleRemovePlace() {
-    setPickedPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
-    );
-    // modal.current.close();
-    setIsModalOpen(false);  // if i comment this line then we get the infnite loop when we open the model  , we can see it by comment this line . to avoid this also we use useContext hook
-    const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || []; //// updating the storage when delete place
-    localStorage.setItem(
-      "selectedPlaces",
-      JSON.stringify(storedIDs.filter((id) => id !== selectedPlace.current))
-    );
-  }
+const handleRemovePlace = useCallback( function handleRemovePlace() {   // this will take two param function on is the function which we will retrun , next is dependency array same as useEffect
+  setPickedPlaces((prevPickedPlaces) =>
+    prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
+  );
+  // modal.current.close();
+  setIsModalOpen(false);  // if i comment this line then we get the infnite loop when we open the model  , we can see it by comment this line . to avoid this also we use useContext hook
+  const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || []; //// updating the storage when delete place
+  localStorage.setItem(
+    "selectedPlaces",
+    JSON.stringify(storedIDs.filter((id) => id !== selectedPlace.current))
+  );
+},[])
+  // function handleRemovePlace() {
+  //   setPickedPlaces((prevPickedPlaces) =>
+  //     prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
+  //   );
+  //   // modal.current.close();
+  //   setIsModalOpen(false);  // if i comment this line then we get the infnite loop when we open the model  , we can see it by comment this line . to avoid this also we use useContext hook
+  //   const storedIDs = JSON.parse(localStorage.getItem("selectedPlaces")) || []; //// updating the storage when delete place
+  //   localStorage.setItem(
+  //     "selectedPlaces",
+  //     JSON.stringify(storedIDs.filter((id) => id !== selectedPlace.current))
+  //   );
+  // }
 
   function handleModelClose() {
     setIsModalOpen(false);
